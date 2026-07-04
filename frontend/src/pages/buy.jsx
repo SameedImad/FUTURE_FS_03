@@ -286,6 +286,45 @@ function BuyPage() {
               <span>{displayedOrder ? "Order locked" : "Ready to place"}</span>
             </div>
 
+            {items.length === 0 ? (
+              <div className="shop-empty shop-empty-inline">
+                <h2>No item selected yet</h2>
+                <p>Choose Buy on a card or go to your cart first.</p>
+                <div className="shop-action-row" style={{ justifyContent: "center", marginTop: "18px" }}>
+                  <a className="shop-button" href="/menu">
+                    Go to Menu
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <section className="shop-buy-panel shop-buy-panel-inline">
+                <div className="shop-buy-panel-header">
+                  <p className="shop-buy-badge">
+                    {displayedOrder ? "Order confirmed" : isCartOrder ? "Cart checkout" : "Single item checkout"}
+                  </p>
+                  <p className="shop-buy-note">
+                    {itemCount} item{itemCount === 1 ? "" : "s"} ready for checkout
+                  </p>
+                </div>
+
+                <div className="shop-cart-list">
+                  {items.map((item) => (
+                    <article className="shop-cart-item" key={item.id}>
+                      <div className="shop-cart-item-row">
+                        <div>
+                          <h3 className="shop-cart-item-title">{item.name}</h3>
+                          <p className="shop-cart-item-meta">
+                            {item.quantity || 1} item{(item.quantity || 1) > 1 ? "s" : ""} · {item.category.replace("-", " ")}
+                          </p>
+                        </div>
+                        <span className="shop-card-price">₹{item.price * (item.quantity || 1)}</span>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            )}
+
             <div className="shop-delivery-card">
               <div className="shop-delivery-header">
                 <div>
@@ -418,7 +457,9 @@ function BuyPage() {
               </div>
             ) : null}
           </div>
+        </section>
 
+        <section className="shop-order-panel">
           <aside className="shop-side-card">
             <div className="shop-side-top">
               <div className="shop-side-stat">
@@ -506,45 +547,6 @@ function BuyPage() {
             </p>
           </aside>
         </section>
-
-        {items.length === 0 ? (
-          <div className="shop-empty">
-            <h2>No item selected yet</h2>
-            <p>Choose Buy on a card or go to your cart first.</p>
-            <div className="shop-action-row" style={{ justifyContent: "center", marginTop: "18px" }}>
-              <a className="shop-button" href="/menu">
-                Go to Menu
-              </a>
-            </div>
-          </div>
-        ) : (
-          <section className="shop-buy-panel">
-            <div className="shop-buy-panel-header">
-              <p className="shop-buy-badge">
-                {displayedOrder ? "Order confirmed" : isCartOrder ? "Cart checkout" : "Single item checkout"}
-              </p>
-              <p className="shop-buy-note">
-                {itemCount} item{itemCount === 1 ? "" : "s"} ready for checkout
-              </p>
-            </div>
-
-            <div className="shop-cart-list">
-              {items.map((item) => (
-                <article className="shop-cart-item" key={item.id}>
-                  <div className="shop-cart-item-row">
-                    <div>
-                      <h3 className="shop-cart-item-title">{item.name}</h3>
-                      <p className="shop-cart-item-meta">
-                        {item.quantity || 1} item{(item.quantity || 1) > 1 ? "s" : ""} · {item.category.replace("-", " ")}
-                      </p>
-                    </div>
-                    <span className="shop-card-price">₹{item.price * (item.quantity || 1)}</span>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-        )}
       </main>
     </div>
   );
