@@ -11,7 +11,7 @@ import {
 } from "../lib/cart.js";
 import { getToken, getUser, isLoggedIn } from "../lib/session.js";
 import "./shop.css";
-
+// buy page
 const RAZORPAY_SCRIPT_URL = "https://checkout.razorpay.com/v1/checkout.js";
 
 function loadRazorpayScript() {
