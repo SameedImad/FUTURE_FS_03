@@ -1,5 +1,6 @@
 const CART_KEY = "royal-delight-cart";
 const BUY_NOW_KEY = "royal-delight-buy-now";
+const LAST_ORDER_KEY = "royal-delight-last-order";
 
 function readStorage(key) {
   if (typeof window === "undefined") return null;
@@ -78,4 +79,44 @@ export function getBuyNowItem() {
 export function clearBuyNowItem() {
   if (typeof window === "undefined") return;
   window.localStorage.removeItem(BUY_NOW_KEY);
+}
+
+export function setLastOrder(order, user = null) {
+  writeStorage(
+    LAST_ORDER_KEY,
+    JSON.stringify({
+      order,
+      userId: user?.id || "",
+      userEmail: typeof user?.email === "string" ? user.email.toLowerCase() : "",
+    })
+  );
+}
+
+export function getLastOrderForUser(user = null) {
+  const rawOrder = readStorage(LAST_ORDER_KEY);
+
+  if (!rawOrder) return null;
+
+  try {
+    const parsed = JSON.parse(rawOrder);
+    const currentUserId = user?.id || "";
+    const currentUserEmail = typeof user?.email === "string" ? user.email.toLowerCase() : "";
+
+    if (parsed?.userId && currentUserId && parsed.userId === currentUserId) {
+      return parsed.order || null;
+    }
+
+    if (parsed?.userEmail && currentUserEmail && parsed.userEmail === currentUserEmail) {
+      return parsed.order || null;
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function clearLastOrder() {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(LAST_ORDER_KEY);
 }

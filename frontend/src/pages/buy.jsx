@@ -1,7 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import Navbar from "../components/Navbar/Navbar.jsx";
 import { apiRequest } from "../lib/api.js";
-import { clearBuyNowItem, clearCart, getBuyNowItem, getCartItems } from "../lib/cart.js";
+import {
+  clearBuyNowItem,
+  clearCart,
+  getBuyNowItem,
+  getCartItems,
+  getLastOrderForUser,
+  setLastOrder,
+} from "../lib/cart.js";
 import { getToken, getUser, isLoggedIn } from "../lib/session.js";
 import "./shop.css";
 
@@ -70,9 +77,12 @@ function BuyPage() {
 
   const isCartOrder = buyData?.kind === "cart";
   const rawItems = isCartOrder ? buyData.items || [] : buyData ? [buyData] : cartItems;
-  const items = confirmedOrder?.items || normalizeItems(rawItems);
-  const total = confirmedOrder?.total ?? items.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
-  const orderSummaryTitle = confirmedOrder
+  const activeItems = normalizeItems(rawItems);
+  const restoredOrder = !activeItems.length ? getLastOrderForUser(user) : null;
+  const displayedOrder = confirmedOrder || restoredOrder;
+  const items = displayedOrder?.items || activeItems;
+  const total = displayedOrder?.total ?? items.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
+  const orderSummaryTitle = displayedOrder
     ? "Order placed successfully"
     : paymentMethod === "online"
       ? "Online payment via Razorpay"
@@ -96,6 +106,7 @@ function BuyPage() {
     });
 
     setConfirmedOrder(data.order);
+    setLastOrder(data.order, user);
     clearBuyNowItem();
     clearCart();
     return data.order;
@@ -256,11 +267,11 @@ function BuyPage() {
             </div>
 
             <div className="shop-action-row">
-              {confirmedOrder ? (
-                <a className="shop-button" href="/dashboard">
-                  View Orders
-                </a>
-              ) : (
+            {displayedOrder ? (
+              <a className="shop-button" href="/dashboard">
+                View Orders
+              </a>
+            ) : (
                 <button
                   className="shop-button"
                   type="button"
@@ -276,7 +287,7 @@ function BuyPage() {
             </div>
 
             <p className="shop-panel-subtitle">
-              {confirmedOrder
+              {displayedOrder
                 ? "Your order has been placed successfully."
                 : paymentMethod === "online"
                   ? "You will see Razorpay's secure test checkout after clicking Place Order."
@@ -297,7 +308,9 @@ function BuyPage() {
           </div>
         ) : (
           <section className="shop-buy-panel">
-            <p className="shop-buy-badge">{confirmedOrder ? "Order confirmed" : isCartOrder ? "Cart checkout" : "Single item checkout"}</p>
+            <p className="shop-buy-badge">
+              {displayedOrder ? "Order confirmed" : isCartOrder ? "Cart checkout" : "Single item checkout"}
+            </p>
 
             <div className="shop-cart-list">
               {items.map((item) => (
