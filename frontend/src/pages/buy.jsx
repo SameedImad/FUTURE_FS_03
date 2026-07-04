@@ -129,7 +129,6 @@ function BuyPage() {
   const displayedOrder = confirmedOrder || restoredOrder;
   const items = displayedOrder?.items || activeItems;
   const total = displayedOrder?.total ?? items.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
-  const itemCount = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
   const displayedDeliveryDetails = displayedOrder?.deliveryDetails || deliveryDetails;
   const orderSummaryTitle = displayedOrder
     ? "Order placed successfully"
@@ -280,245 +279,122 @@ function BuyPage() {
               Razorpay test mode, while cash on delivery confirms the order immediately.
             </p>
 
-            <div className="shop-hero-chips" aria-label="Checkout summary">
-              <span>{itemCount} item{itemCount === 1 ? "" : "s"}</span>
-              <span>{paymentMethod === "online" ? "Online payment" : "Cash on delivery"}</span>
-              <span>{displayedOrder ? "Order locked" : "Ready to place"}</span>
-            </div>
-
-            {items.length === 0 ? (
-              <div className="shop-empty shop-empty-inline">
-                <h2>No item selected yet</h2>
-                <p>Choose Buy on a card or go to your cart first.</p>
-                <div className="shop-action-row" style={{ justifyContent: "center", marginTop: "18px" }}>
-                  <a className="shop-button" href="/menu">
-                    Go to Menu
-                  </a>
+            <div className="shop-delivery-card">
+              <div className="shop-delivery-header">
+                <div>
+                  <p className="shop-delivery-kicker">Delivery details</p>
+                  <h2 className="shop-delivery-title">Where should we send your order?</h2>
                 </div>
+                {displayedOrder ? <span className="shop-delivery-badge">Saved for admin review</span> : null}
               </div>
-            ) : (
-              <section className="shop-buy-panel shop-buy-panel-inline">
-                <div className="shop-buy-panel-header">
-                  <p className="shop-buy-badge">
-                    {displayedOrder ? "Order confirmed" : isCartOrder ? "Cart checkout" : "Single item checkout"}
-                  </p>
-                  <p className="shop-buy-note">
-                    {itemCount} item{itemCount === 1 ? "" : "s"} ready for checkout
-                  </p>
-                </div>
 
-                <div className="shop-cart-list">
-                  {items.map((item) => (
-                    <article className="shop-cart-item" key={item.id}>
-                      <div className="shop-cart-item-row">
-                        <div>
-                          <h3 className="shop-cart-item-title">{item.name}</h3>
-                          <p className="shop-cart-item-meta">
-                            {item.quantity || 1} item{(item.quantity || 1) > 1 ? "s" : ""} · {item.category.replace("-", " ")}
-                          </p>
-                        </div>
-                        <span className="shop-card-price">₹{item.price * (item.quantity || 1)}</span>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            <div className="shop-checkout-grid">
-              <div className="shop-delivery-card">
-                <div className="shop-delivery-header">
+              {displayedOrder ? (
+                <div className="shop-delivery-summary">
                   <div>
-                    <p className="shop-delivery-kicker">Delivery details</p>
-                    <h2 className="shop-delivery-title">Where should we send your order?</h2>
+                    <strong>{displayedDeliveryDetails.fullName || "Recipient"}</strong>
+                    <span>{displayedDeliveryDetails.phone || "No phone number"}</span>
                   </div>
-                  {displayedOrder ? <span className="shop-delivery-badge">Saved for admin review</span> : null}
+                  <p>
+                    {displayedDeliveryDetails.addressLine1}
+                    {displayedDeliveryDetails.addressLine2 ? `, ${displayedDeliveryDetails.addressLine2}` : ""}
+                  </p>
+                  <p>
+                    {displayedDeliveryDetails.city}, {displayedDeliveryDetails.state} - {displayedDeliveryDetails.pincode}
+                  </p>
+                  {displayedDeliveryDetails.instructions ? <p>{displayedDeliveryDetails.instructions}</p> : null}
                 </div>
-
-                {displayedOrder ? (
-                  <div className="shop-delivery-summary">
-                    <div>
-                      <strong>{displayedDeliveryDetails.fullName || "Recipient"}</strong>
-                      <span>{displayedDeliveryDetails.phone || "No phone number"}</span>
-                    </div>
-                    <p>
-                      {displayedDeliveryDetails.addressLine1}
-                      {displayedDeliveryDetails.addressLine2 ? `, ${displayedDeliveryDetails.addressLine2}` : ""}
-                    </p>
-                    <p>
-                      {displayedDeliveryDetails.city}, {displayedDeliveryDetails.state} - {displayedDeliveryDetails.pincode}
-                    </p>
-                    {displayedDeliveryDetails.instructions ? <p>{displayedDeliveryDetails.instructions}</p> : null}
-                  </div>
-                ) : (
-                  <div className="shop-delivery-form">
-                    <label className="shop-field">
-                      <span>Receiver name</span>
-                      <input
-                        type="text"
-                        value={deliveryDetails.fullName}
-                        onChange={(event) =>
-                          setDeliveryDetails((current) => ({ ...current, fullName: event.target.value }))
-                        }
-                        placeholder="Full name"
-                      />
-                    </label>
-                    <label className="shop-field">
-                      <span>Mobile number</span>
-                      <input
-                        type="tel"
-                        value={deliveryDetails.phone}
-                        onChange={(event) =>
-                          setDeliveryDetails((current) => ({ ...current, phone: event.target.value }))
-                        }
-                        placeholder="10-digit phone number"
-                      />
-                    </label>
-                    <label className="shop-field shop-field-wide">
-                      <span>Address line 1</span>
-                      <input
-                        type="text"
-                        value={deliveryDetails.addressLine1}
-                        onChange={(event) =>
-                          setDeliveryDetails((current) => ({ ...current, addressLine1: event.target.value }))
-                        }
-                        placeholder="Flat, house no., street"
-                      />
-                    </label>
-                    <label className="shop-field shop-field-wide">
-                      <span>Address line 2</span>
-                      <input
-                        type="text"
-                        value={deliveryDetails.addressLine2}
-                        onChange={(event) =>
-                          setDeliveryDetails((current) => ({ ...current, addressLine2: event.target.value }))
-                        }
-                        placeholder="Landmark, area, optional"
-                      />
-                    </label>
-                    <label className="shop-field">
-                      <span>City</span>
-                      <input
-                        type="text"
-                        value={deliveryDetails.city}
-                        onChange={(event) =>
-                          setDeliveryDetails((current) => ({ ...current, city: event.target.value }))
-                        }
-                        placeholder="City"
-                      />
-                    </label>
-                    <label className="shop-field">
-                      <span>State</span>
-                      <input
-                        type="text"
-                        value={deliveryDetails.state}
-                        onChange={(event) =>
-                          setDeliveryDetails((current) => ({ ...current, state: event.target.value }))
-                        }
-                        placeholder="State"
-                      />
-                    </label>
-                    <label className="shop-field">
-                      <span>Pincode</span>
-                      <input
-                        type="text"
-                        value={deliveryDetails.pincode}
-                        onChange={(event) =>
-                          setDeliveryDetails((current) => ({ ...current, pincode: event.target.value }))
-                        }
-                        placeholder="Postal code"
-                      />
-                    </label>
-                    <label className="shop-field shop-field-wide">
-                      <span>Delivery instructions</span>
-                      <textarea
-                        rows="3"
-                        value={deliveryDetails.instructions}
-                        onChange={(event) =>
-                          setDeliveryDetails((current) => ({ ...current, instructions: event.target.value }))
-                        }
-                        placeholder="Any notes for the rider or admin"
-                      />
-                    </label>
-                  </div>
-                )}
-              </div>
-
-              <aside className="shop-side-card">
-                <div className="shop-side-top">
-                  <div className="shop-side-stat">
-                    <strong>₹{total}</strong>
-                    <span>Order total</span>
-                  </div>
-
-                  <div className="shop-side-meta" aria-label="Order details">
-                    <div>
-                      <span>Items</span>
-                      <strong>{itemCount}</strong>
-                    </div>
-                    <div>
-                      <span>Payment</span>
-                      <strong>{paymentMethod === "online" ? "Online" : "COD"}</strong>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="shop-payment-options" role="radiogroup" aria-label="Payment method">
-                  <label className={`shop-payment-option ${paymentMethod === "online" ? "is-selected" : ""}`}>
+              ) : (
+                <div className="shop-delivery-form">
+                  <label className="shop-field">
+                    <span>Receiver name</span>
                     <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="online"
-                      checked={paymentMethod === "online"}
-                      onChange={() => setPaymentMethod("online")}
+                      type="text"
+                      value={deliveryDetails.fullName}
+                      onChange={(event) =>
+                        setDeliveryDetails((current) => ({ ...current, fullName: event.target.value }))
+                      }
+                      placeholder="Full name"
                     />
-                    <span>
-                      <strong>Online payment</strong>
-                      <small>Pay securely with Razorpay test mode.</small>
-                    </span>
                   </label>
-
-                  <label className={`shop-payment-option ${paymentMethod === "cod" ? "is-selected" : ""}`}>
+                  <label className="shop-field">
+                    <span>Mobile number</span>
                     <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="cod"
-                      checked={paymentMethod === "cod"}
-                      onChange={() => setPaymentMethod("cod")}
+                      type="tel"
+                      value={deliveryDetails.phone}
+                      onChange={(event) =>
+                        setDeliveryDetails((current) => ({ ...current, phone: event.target.value }))
+                      }
+                      placeholder="10-digit phone number"
                     />
-                    <span>
-                      <strong>Cash on delivery</strong>
-                      <small>Place the order now and pay when it arrives.</small>
-                    </span>
+                  </label>
+                  <label className="shop-field shop-field-wide">
+                    <span>Address line 1</span>
+                    <input
+                      type="text"
+                      value={deliveryDetails.addressLine1}
+                      onChange={(event) =>
+                        setDeliveryDetails((current) => ({ ...current, addressLine1: event.target.value }))
+                      }
+                      placeholder="Flat, house no., street"
+                    />
+                  </label>
+                  <label className="shop-field shop-field-wide">
+                    <span>Address line 2</span>
+                    <input
+                      type="text"
+                      value={deliveryDetails.addressLine2}
+                      onChange={(event) =>
+                        setDeliveryDetails((current) => ({ ...current, addressLine2: event.target.value }))
+                      }
+                      placeholder="Landmark, area, optional"
+                    />
+                  </label>
+                  <label className="shop-field">
+                    <span>City</span>
+                    <input
+                      type="text"
+                      value={deliveryDetails.city}
+                      onChange={(event) =>
+                        setDeliveryDetails((current) => ({ ...current, city: event.target.value }))
+                      }
+                      placeholder="City"
+                    />
+                  </label>
+                  <label className="shop-field">
+                    <span>State</span>
+                    <input
+                      type="text"
+                      value={deliveryDetails.state}
+                      onChange={(event) =>
+                        setDeliveryDetails((current) => ({ ...current, state: event.target.value }))
+                      }
+                      placeholder="State"
+                    />
+                  </label>
+                  <label className="shop-field">
+                    <span>Pincode</span>
+                    <input
+                      type="text"
+                      value={deliveryDetails.pincode}
+                      onChange={(event) =>
+                        setDeliveryDetails((current) => ({ ...current, pincode: event.target.value }))
+                      }
+                      placeholder="Postal code"
+                    />
+                  </label>
+                  <label className="shop-field shop-field-wide">
+                    <span>Delivery instructions</span>
+                    <textarea
+                      rows="3"
+                      value={deliveryDetails.instructions}
+                      onChange={(event) =>
+                        setDeliveryDetails((current) => ({ ...current, instructions: event.target.value }))
+                      }
+                      placeholder="Any notes for the rider or admin"
+                    />
                   </label>
                 </div>
-
-                <div className="shop-side-actions">
-                  {displayedOrder ? (
-                    <a className="shop-button" href="/dashboard">
-                      View Orders
-                    </a>
-                  ) : (
-                    <button
-                      className="shop-button"
-                      type="button"
-                      onClick={handlePlaceOrder}
-                      disabled={isSubmitting || items.length === 0}
-                    >
-                      {isSubmitting ? "Processing..." : "Place Order"}
-                    </button>
-                  )}
-                  <a className="shop-button-secondary" href="/menu">
-                    Back to Menu
-                  </a>
-                </div>
-
-                <p className="shop-side-footnote">
-                  {paymentMethod === "online"
-                    ? "You will see Razorpay's secure test checkout after clicking Place Order."
-                    : "Cash on delivery confirms the order immediately and saves it for admin review."}
-                </p>
-              </aside>
+              )}
             </div>
 
             {statusMessage ? (
@@ -535,7 +411,106 @@ function BuyPage() {
               </div>
             ) : null}
           </div>
+
+          <aside className="shop-side-card">
+            <div className="shop-side-stat">
+              <strong>₹{total}</strong>
+              <span>Order total</span>
+            </div>
+
+            <div className="shop-payment-options" role="radiogroup" aria-label="Payment method">
+              <label className={`shop-payment-option ${paymentMethod === "online" ? "is-selected" : ""}`}>
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="online"
+                  checked={paymentMethod === "online"}
+                  onChange={() => setPaymentMethod("online")}
+                />
+                <span>
+                  <strong>Online payment</strong>
+                  <small>Pay securely with Razorpay test mode.</small>
+                </span>
+              </label>
+
+              <label className={`shop-payment-option ${paymentMethod === "cod" ? "is-selected" : ""}`}>
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="cod"
+                  checked={paymentMethod === "cod"}
+                  onChange={() => setPaymentMethod("cod")}
+                />
+                <span>
+                  <strong>Cash on delivery</strong>
+                  <small>Place the order now and pay when it arrives.</small>
+                </span>
+              </label>
+            </div>
+
+            <div className="shop-action-row">
+            {displayedOrder ? (
+              <a className="shop-button" href="/dashboard">
+                View Orders
+              </a>
+            ) : (
+                <button
+                  className="shop-button"
+                  type="button"
+                  onClick={handlePlaceOrder}
+                  disabled={isSubmitting || items.length === 0}
+                >
+                  {isSubmitting ? "Processing..." : "Place Order"}
+                </button>
+              )}
+              <a className="shop-button-secondary" href="/menu">
+                Back to Menu
+              </a>
+            </div>
+
+            <p className="shop-panel-subtitle">
+              {displayedOrder
+                ? "Your order has been placed successfully."
+                : paymentMethod === "online"
+                  ? "You will see Razorpay's secure test checkout after clicking Place Order."
+                  : "Cash on delivery confirms the order immediately and saves it for admin review."}
+            </p>
+          </aside>
         </section>
+
+        {items.length === 0 ? (
+          <div className="shop-empty">
+            <h2>No item selected yet</h2>
+            <p>Choose Buy on a card or go to your cart first.</p>
+            <div className="shop-action-row" style={{ justifyContent: "center", marginTop: "18px" }}>
+              <a className="shop-button" href="/menu">
+                Go to Menu
+              </a>
+            </div>
+          </div>
+        ) : (
+          <section className="shop-buy-panel">
+            <p className="shop-buy-badge">
+              {displayedOrder ? "Order confirmed" : isCartOrder ? "Cart checkout" : "Single item checkout"}
+            </p>
+
+            <div className="shop-cart-list">
+              {items.map((item) => (
+                <article className="shop-cart-item" key={item.id}>
+                  <div className="shop-cart-item-row">
+                    <div>
+                      <h3 className="shop-cart-item-title">{item.name}</h3>
+                      <p className="shop-cart-item-meta">
+                        {item.quantity || 1} item{(item.quantity || 1) > 1 ? "s" : ""} · {item.category.replace("-", " ")}
+                      </p>
+                    </div>
+                    <span className="shop-card-price">₹{item.price * (item.quantity || 1)}</span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );
