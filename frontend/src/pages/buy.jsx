@@ -512,6 +512,12 @@ function BuyPage() {
                     Back to Menu
                   </a>
                 </div>
+
+                <p className="shop-side-footnote">
+                  {paymentMethod === "online"
+                    ? "You will see Razorpay's secure test checkout after clicking Place Order."
+                    : "Cash on delivery confirms the order immediately and saves it for admin review."}
+                </p>
               </aside>
             </div>
 
