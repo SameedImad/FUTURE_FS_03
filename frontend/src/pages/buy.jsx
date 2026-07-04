@@ -129,6 +129,7 @@ function BuyPage() {
   const displayedOrder = confirmedOrder || restoredOrder;
   const items = displayedOrder?.items || activeItems;
   const total = displayedOrder?.total ?? items.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
+  const itemCount = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
   const displayedDeliveryDetails = displayedOrder?.deliveryDetails || deliveryDetails;
   const orderSummaryTitle = displayedOrder
     ? "Order placed successfully"
@@ -279,6 +280,12 @@ function BuyPage() {
               Razorpay test mode, while cash on delivery confirms the order immediately.
             </p>
 
+            <div className="shop-hero-chips" aria-label="Checkout summary">
+              <span>{itemCount} item{itemCount === 1 ? "" : "s"}</span>
+              <span>{paymentMethod === "online" ? "Online payment" : "Cash on delivery"}</span>
+              <span>{displayedOrder ? "Order locked" : "Ready to place"}</span>
+            </div>
+
             <div className="shop-delivery-card">
               <div className="shop-delivery-header">
                 <div>
@@ -413,9 +420,22 @@ function BuyPage() {
           </div>
 
           <aside className="shop-side-card">
-            <div className="shop-side-stat">
-              <strong>₹{total}</strong>
-              <span>Order total</span>
+            <div className="shop-side-top">
+              <div className="shop-side-stat">
+                <strong>₹{total}</strong>
+                <span>Order total</span>
+              </div>
+
+              <div className="shop-side-meta" aria-label="Order details">
+                <div>
+                  <span>Items</span>
+                  <strong>{itemCount}</strong>
+                </div>
+                <div>
+                  <span>Payment</span>
+                  <strong>{paymentMethod === "online" ? "Online" : "COD"}</strong>
+                </div>
+              </div>
             </div>
 
             <div className="shop-payment-options" role="radiogroup" aria-label="Payment method">
@@ -448,12 +468,12 @@ function BuyPage() {
               </label>
             </div>
 
-            <div className="shop-action-row">
-            {displayedOrder ? (
-              <a className="shop-button" href="/dashboard">
-                View Orders
-              </a>
-            ) : (
+            <div className="shop-side-actions">
+              {displayedOrder ? (
+                <a className="shop-button" href="/dashboard">
+                  View Orders
+                </a>
+              ) : (
                 <button
                   className="shop-button"
                   type="button"
@@ -466,6 +486,15 @@ function BuyPage() {
               <a className="shop-button-secondary" href="/menu">
                 Back to Menu
               </a>
+            </div>
+
+            <div className="shop-side-note">
+              <strong>{paymentMethod === "online" ? "Secure test checkout" : "Pay when it arrives"}</strong>
+              <p>
+                {paymentMethod === "online"
+                  ? "Razorpay test mode is ready once you tap Place Order."
+                  : "COD confirms the order immediately and keeps it in admin review."}
+              </p>
             </div>
 
             <p className="shop-panel-subtitle">
@@ -490,9 +519,14 @@ function BuyPage() {
           </div>
         ) : (
           <section className="shop-buy-panel">
-            <p className="shop-buy-badge">
-              {displayedOrder ? "Order confirmed" : isCartOrder ? "Cart checkout" : "Single item checkout"}
-            </p>
+            <div className="shop-buy-panel-header">
+              <p className="shop-buy-badge">
+                {displayedOrder ? "Order confirmed" : isCartOrder ? "Cart checkout" : "Single item checkout"}
+              </p>
+              <p className="shop-buy-note">
+                {itemCount} item{itemCount === 1 ? "" : "s"} ready for checkout
+              </p>
+            </div>
 
             <div className="shop-cart-list">
               {items.map((item) => (
