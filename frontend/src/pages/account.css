@@ -1,0 +1,472 @@
+.account-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(217, 41, 46, 0.1), transparent 20%),
+    radial-gradient(circle at top right, rgba(17, 17, 17, 0.06), transparent 28%),
+    linear-gradient(180deg, #fbf7f7 0%, #f2eceb 100%);
+}
+
+.account-main {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 28px 32px 72px;
+}
+
+.account-hero {
+  display: grid;
+  gap: 22px;
+  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 360px);
+  align-items: stretch;
+  margin-bottom: 24px;
+}
+
+.account-hero-card,
+.account-stat,
+.account-panel {
+  border-radius: 28px;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 22px 48px rgba(17, 17, 17, 0.08);
+}
+
+.account-hero-card {
+  padding: 32px;
+}
+
+.account-kicker {
+  margin: 0 0 12px;
+  color: #d9292e;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.account-title {
+  margin: 0;
+  color: #101010;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+.account-copy {
+  max-width: 64ch;
+  margin: 14px 0 0;
+  color: rgba(17, 17, 17, 0.72);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.account-stat-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.account-stat {
+  padding: 20px 22px;
+  display: grid;
+  gap: 8px;
+}
+
+.account-stat-label {
+  color: rgba(17, 17, 17, 0.62);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.account-stat-value {
+  color: #111111;
+  font-size: 1.55rem;
+  font-weight: 800;
+}
+
+.account-sections {
+  display: grid;
+  gap: 22px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.account-panel {
+  padding: 24px;
+}
+
+.account-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.account-panel-title {
+  margin: 0;
+  color: #101010;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.account-panel-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(217, 41, 46, 0.1);
+  color: #a41f23;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.account-panel-badge-success {
+  background: rgba(20, 141, 74, 0.1);
+  color: #0f5f33;
+}
+
+.account-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 14px;
+}
+
+.account-status-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.account-status-pill.is-pending {
+  background: rgba(217, 41, 46, 0.1);
+  color: #a41f23;
+}
+
+.account-status-pill.is-complete {
+  background: rgba(20, 141, 74, 0.1);
+  color: #0f5f33;
+}
+
+.account-accept-button {
+  min-height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #111111;
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.account-accept-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.account-accept-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.account-track-card {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(251, 247, 247, 0.96) 100%);
+}
+
+.account-track-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 5px;
+  background: linear-gradient(180deg, #e63940 0%, #111111 100%);
+  opacity: 0.9;
+}
+
+.account-track-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.account-track-kicker {
+  margin: 0 0 8px;
+  color: #d9292e;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.account-track-title {
+  margin: 0;
+  color: #111111;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.account-track-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.account-track-pill.is-pending {
+  background: rgba(217, 41, 46, 0.1);
+  color: #a41f23;
+}
+
+.account-track-pill.is-complete {
+  background: rgba(20, 141, 74, 0.1);
+  color: #0f5f33;
+}
+
+.account-track-copy {
+  margin: 0;
+  color: rgba(17, 17, 17, 0.72);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.account-stepper {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  margin-top: 4px;
+}
+
+.account-stepper-item {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+
+.account-stepper-node {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.account-stepper-dot {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid rgba(17, 17, 17, 0.24);
+  background: #ffffff;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 800;
+  box-shadow: 0 8px 18px rgba(17, 17, 17, 0.06);
+}
+
+.account-stepper-connector {
+  height: 5px;
+  flex: 1;
+  margin-left: -1px;
+  margin-right: -1px;
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.12);
+}
+
+.account-stepper-item:last-child .account-stepper-connector {
+  display: none;
+}
+
+.account-stepper-connector.is-filled {
+  background: linear-gradient(90deg, #168f43 0%, #1aa04a 100%);
+}
+
+.account-stepper-dot.is-complete,
+.account-stepper-dot.is-current {
+  border-color: #168f43;
+  background: #168f43;
+}
+
+.account-stepper-label {
+  color: rgba(17, 17, 17, 0.7);
+  font-size: 0.92rem;
+  text-align: center;
+}
+
+.account-track-details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px 12px;
+  padding-top: 4px;
+  color: rgba(17, 17, 17, 0.7);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.account-track-note {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(17, 17, 17, 0.04);
+  color: rgba(17, 17, 17, 0.66);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.account-order-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.account-order-badge.is-pending {
+  background: rgba(217, 41, 46, 0.1);
+  color: #a41f23;
+}
+
+.account-order-badge.is-complete {
+  background: rgba(20, 141, 74, 0.1);
+  color: #0f5f33;
+}
+
+.account-panel-wide {
+  grid-column: 1 / -1;
+}
+
+.account-list {
+  display: grid;
+  gap: 14px;
+}
+
+.account-item {
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.account-item-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.account-item-title {
+  margin: 0;
+  color: #111111;
+  font-size: 1.04rem;
+  font-weight: 800;
+}
+
+.account-item-meta {
+  margin: 6px 0 0;
+  color: rgba(17, 17, 17, 0.66);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.account-track-card .account-item-title {
+  font-size: 1.08rem;
+}
+
+.account-track-card .account-item-meta {
+  margin-top: 8px;
+}
+
+.account-track-card .account-item-actions {
+  margin-top: 2px;
+}
+
+.account-price {
+  color: #d9292e;
+  font-size: 1rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+@media (max-width: 1080px) {
+  .account-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .account-sections {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .account-main {
+    padding: 18px 12px 56px;
+  }
+
+  .account-hero-card,
+  .account-panel,
+  .account-stat {
+    border-radius: 22px;
+  }
+
+  .account-panel-header,
+  .account-item-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .account-track-header,
+  .account-track-details {
+    flex-direction: column;
+  }
+
+  .account-stepper {
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  .account-stepper-item {
+    gap: 8px;
+  }
+
+  .account-stepper-node {
+    align-items: center;
+  }
+
+  .account-stepper-dot {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    font-size: 0.78rem;
+  }
+
+  .account-stepper-connector {
+    height: 4px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .account-stepper-label {
+    font-size: 0.74rem;
+    line-height: 1.25;
+    min-height: 2.5em;
+  }
+}
