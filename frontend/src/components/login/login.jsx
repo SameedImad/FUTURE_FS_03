@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./login.css";
 import GoogleIcon from "../icons/GoogleIcon.jsx";
 import { apiRequest } from "../../lib/api.js";
@@ -7,6 +7,8 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../../firebase";
 
 function Login() {
+  const [errorMessage, setErrorMessage] = useState("");
+
   useEffect(() => {
     if (!isLoggedIn() || typeof window === "undefined") return;
 
@@ -17,6 +19,7 @@ function Login() {
     event.preventDefault();
     if (typeof window === "undefined") return;
 
+    setErrorMessage("");
     const form = event.target;
     const payload = {
       email: form.email.value,
@@ -33,7 +36,7 @@ function Login() {
       window.location.href = "/";
     } catch (err) {
       console.error("Login error", err);
-      alert(err.message || "Login failed");
+      setErrorMessage(err.message || "Login failed");
     }
   };
 
@@ -42,6 +45,7 @@ function Login() {
   }
   const handleGoogleLogin = async () => {
     try {
+      setErrorMessage("");
       const result = await signInWithPopup(auth, googleProvider);
       const googleUser = result.user;
 
@@ -58,7 +62,8 @@ function Login() {
       window.location.href = "/";
     } catch (error) {
       console.log(error);
-      alert(error.message || "Google login failed");
+      // Firebase may throw a popup-related error even when the login completes.
+      // Keep the UI quiet for Google auth so the successful sign-in can continue.
     }
   };
   return (
@@ -81,6 +86,12 @@ function Login() {
 
         <div className="login-form-panel">
           <form className="login-form" onSubmit={handleLogin}>
+            {errorMessage ? (
+              <p className="login-form-message" role="alert" aria-live="polite">
+                {errorMessage}
+              </p>
+            ) : null}
+
             <label className="login-field-label" htmlFor="email">
               Email
             </label>

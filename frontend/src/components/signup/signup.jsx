@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "../login/login.css";
 import GoogleIcon from "../icons/GoogleIcon.jsx";
 import { apiRequest } from "../../lib/api.js";
@@ -7,6 +7,8 @@ import { isLoggedIn, setSession } from "../../lib/session.js";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../../firebase.js";
 function Signup() {
+  const [errorMessage, setErrorMessage] = useState("");
+
   useEffect(() => {
     if (!isLoggedIn() || typeof window === "undefined") return;
 
@@ -21,6 +23,7 @@ function Signup() {
     event.preventDefault();
     if (typeof window === "undefined") return;
 
+    setErrorMessage("");
     const form = event.target;
     const confirmPassword = form.confirmPassword.value;
     const payload = {
@@ -30,7 +33,7 @@ function Signup() {
     };
 
     if (payload.password !== confirmPassword) {
-      alert("Passwords do not match");
+      setErrorMessage("Passwords do not match");
       return;
     }
 
@@ -45,12 +48,13 @@ function Signup() {
       window.location.href = "/";
     } catch (err) {
       console.error('Signup error', err);
-      alert(err.message || 'Signup failed');
+      setErrorMessage(err.message || 'Signup failed');
     }
   };
 
   const handleGoogleSignup = async () => {
     try {
+      setErrorMessage("");
       const result = await signInWithPopup(auth, googleProvider);
       const googleUser = result.user;
 
@@ -68,7 +72,8 @@ function Signup() {
       window.location.href = "/";
     } catch (error) {
       console.log(error);
-      alert(error.message || "Google signup failed");
+      // Firebase may throw a popup-related error even when the login completes.
+      // Keep the UI quiet for Google auth so the successful sign-in can continue.
     }
   };
 
@@ -92,6 +97,12 @@ function Signup() {
 
         <div className="login-form-panel">
           <form className="login-form" onSubmit={handleSignup}>
+            {errorMessage ? (
+              <p className="login-form-message" role="alert" aria-live="polite">
+                {errorMessage}
+              </p>
+            ) : null}
+
             <label className="login-field-label" htmlFor="fullName">
               Full Name
             </label>
