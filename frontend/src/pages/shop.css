@@ -182,7 +182,7 @@
 
 .shop-delivery-summary {
   display: grid;
-  gap: 6px;
+  gap: 12px;
   color: rgba(17, 17, 17, 0.78);
   line-height: 1.55;
 }
@@ -196,10 +196,6 @@
 
 .shop-delivery-summary span {
   color: rgba(17, 17, 17, 0.68);
-}
-
-.shop-delivery-summary p {
-  margin: 0;
 }
 
 .shop-side-card {
