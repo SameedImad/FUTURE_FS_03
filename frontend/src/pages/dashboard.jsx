@@ -39,6 +39,21 @@ function getStepIndex(order) {
   return 0;
 }
 
+function formatDeliveryAddress(deliveryDetails) {
+  if (!deliveryDetails) {
+    return "Delivery details not available";
+  }
+
+  const lines = [
+    deliveryDetails.addressLine1,
+    deliveryDetails.addressLine2,
+    [deliveryDetails.city, deliveryDetails.state].filter(Boolean).join(", "),
+    deliveryDetails.pincode,
+  ].filter(Boolean);
+
+  return lines.join(" · ");
+}
+
 function DashboardPage() {
   const loggedIn = isLoggedIn();
   const user = getUser();
@@ -171,8 +186,20 @@ function DashboardPage() {
                         <span>₹{order.total}</span>
                       </div>
 
+                      <div className="account-delivery-details">
+                        <p className="account-delivery-title">Delivery details</p>
+                        <div className="account-delivery-grid">
+                          <span>{order.deliveryDetails?.fullName || order.customerName}</span>
+                          <span>{order.deliveryDetails?.phone || "No phone provided"}</span>
+                          <span>{formatDeliveryAddress(order.deliveryDetails)}</span>
+                          {order.deliveryDetails?.instructions ? (
+                            <span>Note: {order.deliveryDetails.instructions}</span>
+                          ) : null}
+                        </div>
+                      </div>
+
                       <p className="account-track-note">
-                        Delivery details will be shown once the order reaches the delivery stage.
+                        The delivery address is attached to this order for customer tracking and admin handling.
                       </p>
                     </div>
                   );
@@ -209,6 +236,17 @@ function DashboardPage() {
                     <p className="account-item-meta">
                       {order.items?.map((item) => `${item.quantity || 1}x ${item.name}`).join(", ")}
                     </p>
+                    <div className="account-delivery-details">
+                      <p className="account-delivery-title">Delivery details</p>
+                      <div className="account-delivery-grid">
+                        <span>{order.deliveryDetails?.fullName || order.customerName}</span>
+                        <span>{order.deliveryDetails?.phone || "No phone provided"}</span>
+                        <span>{formatDeliveryAddress(order.deliveryDetails)}</span>
+                        {order.deliveryDetails?.instructions ? (
+                          <span>Note: {order.deliveryDetails.instructions}</span>
+                        ) : null}
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>

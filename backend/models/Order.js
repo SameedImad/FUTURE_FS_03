@@ -30,6 +30,52 @@ const orderItemSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const deliveryDetailsSchema = new mongoose.Schema(
+  {
+    fullName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    addressLine1: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    addressLine2: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    city: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    state: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    pincode: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    instructions: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+  },
+  { _id: false }
+);
+
 const orderSchema = new mongoose.Schema(
   {
     customerName: {
@@ -42,6 +88,10 @@ const orderSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
       default: "",
+    },
+    deliveryDetails: {
+      type: deliveryDetailsSchema,
+      required: true,
     },
     userId: {
       type: String,

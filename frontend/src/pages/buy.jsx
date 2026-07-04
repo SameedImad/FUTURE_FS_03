@@ -53,6 +53,52 @@ function normalizeItems(items) {
   }));
 }
 
+function getInitialDeliveryDetails(user) {
+  return {
+    fullName: user?.name || "",
+    phone: "",
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    state: "",
+    pincode: "",
+    instructions: "",
+  };
+}
+
+function getTrimmedDeliveryDetails(details) {
+  return {
+    fullName: String(details.fullName || "").trim(),
+    phone: String(details.phone || "").trim(),
+    addressLine1: String(details.addressLine1 || "").trim(),
+    addressLine2: String(details.addressLine2 || "").trim(),
+    city: String(details.city || "").trim(),
+    state: String(details.state || "").trim(),
+    pincode: String(details.pincode || "").trim(),
+    instructions: String(details.instructions || "").trim(),
+  };
+}
+
+function getDeliveryDetailsError(details) {
+  const requiredFields = {
+    fullName: "receiver name",
+    phone: "mobile number",
+    addressLine1: "street address",
+    city: "city",
+    state: "state",
+    pincode: "pincode",
+  };
+  const trimmed = getTrimmedDeliveryDetails(details);
+
+  for (const [key, label] of Object.entries(requiredFields)) {
+    if (!trimmed[key]) {
+      return `Please add your ${label}.`;
+    }
+  }
+
+  return "";
+}
+
 function BuyPage() {
   const loggedIn = isLoggedIn();
   const [paymentMethod, setPaymentMethod] = useState("cod");
@@ -60,6 +106,7 @@ function BuyPage() {
   const [statusMessage, setStatusMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [confirmedOrder, setConfirmedOrder] = useState(null);
+  const [deliveryDetails, setDeliveryDetails] = useState(() => getInitialDeliveryDetails(getUser()));
 
   useEffect(() => {
     if (!loggedIn && typeof window !== "undefined") {
@@ -82,6 +129,7 @@ function BuyPage() {
   const displayedOrder = confirmedOrder || restoredOrder;
   const items = displayedOrder?.items || activeItems;
   const total = displayedOrder?.total ?? items.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
+  const displayedDeliveryDetails = displayedOrder?.deliveryDetails || deliveryDetails;
   const orderSummaryTitle = displayedOrder
     ? "Order placed successfully"
     : paymentMethod === "online"
@@ -89,18 +137,20 @@ function BuyPage() {
       : "Cash on delivery";
 
   const createOrderRecord = async (paymentDetails = {}) => {
+    const normalizedDeliveryDetails = getTrimmedDeliveryDetails(deliveryDetails);
     const data = await apiRequest("/orders", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${getToken()}`,
       },
       body: JSON.stringify({
-        customerName: user?.name || "Guest",
+        customerName: normalizedDeliveryDetails.fullName || user?.name || "Guest",
         customerEmail: user?.email || "",
         items,
         total,
         paymentMethod,
         paymentStatus: paymentMethod === "online" ? "paid" : "pending",
+        deliveryDetails: normalizedDeliveryDetails,
         ...paymentDetails,
       }),
     });
@@ -113,6 +163,13 @@ function BuyPage() {
   };
 
   const handleCashOnDelivery = async () => {
+    const deliveryError = getDeliveryDetailsError(deliveryDetails);
+
+    if (deliveryError) {
+      setErrorMessage(deliveryError);
+      return;
+    }
+
     setIsSubmitting(true);
     setErrorMessage("");
     setStatusMessage("");
@@ -129,6 +186,13 @@ function BuyPage() {
   };
 
   const handleOnlinePayment = async () => {
+    const deliveryError = getDeliveryDetailsError(deliveryDetails);
+
+    if (deliveryError) {
+      setErrorMessage(deliveryError);
+      return;
+    }
+
     setIsSubmitting(true);
     setErrorMessage("");
     setStatusMessage("");
@@ -152,7 +216,7 @@ function BuyPage() {
         name: "Royal Delight",
         description: `Payment for ${items.length} item${items.length > 1 ? "s" : ""}`,
         prefill: {
-          name: user?.name || "Guest",
+          name: deliveryDetails.fullName || user?.name || "Guest",
           email: user?.email || "",
         },
         theme: {
@@ -214,6 +278,124 @@ function BuyPage() {
               Hi {user?.name || "there"}, choose how you want to pay and place the order. Online checkout opens
               Razorpay test mode, while cash on delivery confirms the order immediately.
             </p>
+
+            <div className="shop-delivery-card">
+              <div className="shop-delivery-header">
+                <div>
+                  <p className="shop-delivery-kicker">Delivery details</p>
+                  <h2 className="shop-delivery-title">Where should we send your order?</h2>
+                </div>
+                {displayedOrder ? <span className="shop-delivery-badge">Saved for admin review</span> : null}
+              </div>
+
+              {displayedOrder ? (
+                <div className="shop-delivery-summary">
+                  <div>
+                    <strong>{displayedDeliveryDetails.fullName || "Recipient"}</strong>
+                    <span>{displayedDeliveryDetails.phone || "No phone number"}</span>
+                  </div>
+                  <p>
+                    {displayedDeliveryDetails.addressLine1}
+                    {displayedDeliveryDetails.addressLine2 ? `, ${displayedDeliveryDetails.addressLine2}` : ""}
+                  </p>
+                  <p>
+                    {displayedDeliveryDetails.city}, {displayedDeliveryDetails.state} - {displayedDeliveryDetails.pincode}
+                  </p>
+                  {displayedDeliveryDetails.instructions ? <p>{displayedDeliveryDetails.instructions}</p> : null}
+                </div>
+              ) : (
+                <div className="shop-delivery-form">
+                  <label className="shop-field">
+                    <span>Receiver name</span>
+                    <input
+                      type="text"
+                      value={deliveryDetails.fullName}
+                      onChange={(event) =>
+                        setDeliveryDetails((current) => ({ ...current, fullName: event.target.value }))
+                      }
+                      placeholder="Full name"
+                    />
+                  </label>
+                  <label className="shop-field">
+                    <span>Mobile number</span>
+                    <input
+                      type="tel"
+                      value={deliveryDetails.phone}
+                      onChange={(event) =>
+                        setDeliveryDetails((current) => ({ ...current, phone: event.target.value }))
+                      }
+                      placeholder="10-digit phone number"
+                    />
+                  </label>
+                  <label className="shop-field shop-field-wide">
+                    <span>Address line 1</span>
+                    <input
+                      type="text"
+                      value={deliveryDetails.addressLine1}
+                      onChange={(event) =>
+                        setDeliveryDetails((current) => ({ ...current, addressLine1: event.target.value }))
+                      }
+                      placeholder="Flat, house no., street"
+                    />
+                  </label>
+                  <label className="shop-field shop-field-wide">
+                    <span>Address line 2</span>
+                    <input
+                      type="text"
+                      value={deliveryDetails.addressLine2}
+                      onChange={(event) =>
+                        setDeliveryDetails((current) => ({ ...current, addressLine2: event.target.value }))
+                      }
+                      placeholder="Landmark, area, optional"
+                    />
+                  </label>
+                  <label className="shop-field">
+                    <span>City</span>
+                    <input
+                      type="text"
+                      value={deliveryDetails.city}
+                      onChange={(event) =>
+                        setDeliveryDetails((current) => ({ ...current, city: event.target.value }))
+                      }
+                      placeholder="City"
+                    />
+                  </label>
+                  <label className="shop-field">
+                    <span>State</span>
+                    <input
+                      type="text"
+                      value={deliveryDetails.state}
+                      onChange={(event) =>
+                        setDeliveryDetails((current) => ({ ...current, state: event.target.value }))
+                      }
+                      placeholder="State"
+                    />
+                  </label>
+                  <label className="shop-field">
+                    <span>Pincode</span>
+                    <input
+                      type="text"
+                      value={deliveryDetails.pincode}
+                      onChange={(event) =>
+                        setDeliveryDetails((current) => ({ ...current, pincode: event.target.value }))
+                      }
+                      placeholder="Postal code"
+                    />
+                  </label>
+                  <label className="shop-field shop-field-wide">
+                    <span>Delivery instructions</span>
+                    <textarea
+                      rows="3"
+                      value={deliveryDetails.instructions}
+                      onChange={(event) =>
+                        setDeliveryDetails((current) => ({ ...current, instructions: event.target.value }))
+                      }
+                      placeholder="Any notes for the rider or admin"
+                    />
+                  </label>
+                </div>
+              )}
+            </div>
 
             {statusMessage ? (
               <div className="shop-success-banner" role="status" aria-live="polite">

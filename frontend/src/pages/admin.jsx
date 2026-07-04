@@ -53,6 +53,21 @@ function getOrderStepIndex(order) {
   return 0;
 }
 
+function formatDeliveryAddress(deliveryDetails) {
+  if (!deliveryDetails) {
+    return "Delivery details not available";
+  }
+
+  const lines = [
+    deliveryDetails.addressLine1,
+    deliveryDetails.addressLine2,
+    [deliveryDetails.city, deliveryDetails.state].filter(Boolean).join(", "),
+    deliveryDetails.pincode,
+  ].filter(Boolean);
+
+  return lines.join(" · ");
+}
+
 function AdminPage() {
   const loggedIn = isLoggedIn();
   const user = getUser();
@@ -224,6 +239,18 @@ function AdminPage() {
                       <div className="account-track-details">
                         <span>{order.customerName}</span>
                         <span>{order.customerEmail || "No email provided"}</span>
+                      </div>
+
+                      <div className="account-delivery-details">
+                        <p className="account-delivery-title">Delivery details</p>
+                        <div className="account-delivery-grid">
+                          <span>{order.deliveryDetails?.fullName || "No recipient name"}</span>
+                          <span>{order.deliveryDetails?.phone || "No phone provided"}</span>
+                          <span>{formatDeliveryAddress(order.deliveryDetails)}</span>
+                          {order.deliveryDetails?.instructions ? (
+                            <span>Note: {order.deliveryDetails.instructions}</span>
+                          ) : null}
+                        </div>
                       </div>
 
                       <p className="account-track-note">

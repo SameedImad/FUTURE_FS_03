@@ -1,5 +1,18 @@
 const Order = require("../models/Order");
 
+function normalizeDeliveryDetails(deliveryDetails = {}) {
+  return {
+    fullName: String(deliveryDetails.fullName || "").trim(),
+    phone: String(deliveryDetails.phone || "").trim(),
+    addressLine1: String(deliveryDetails.addressLine1 || "").trim(),
+    addressLine2: String(deliveryDetails.addressLine2 || "").trim(),
+    city: String(deliveryDetails.city || "").trim(),
+    state: String(deliveryDetails.state || "").trim(),
+    pincode: String(deliveryDetails.pincode || "").trim(),
+    instructions: String(deliveryDetails.instructions || "").trim(),
+  };
+}
+
 const getRazorpayConfig = (req, res) => {
   return res.status(200).json({
     success: true,
@@ -13,6 +26,7 @@ const createOrder = async (req, res) => {
     const {
       customerName,
       customerEmail,
+      deliveryDetails,
       items,
       total,
       paymentMethod,
@@ -26,6 +40,19 @@ const createOrder = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Please provide the order details",
+      });
+    }
+
+    const normalizedDeliveryDetails = normalizeDeliveryDetails(deliveryDetails);
+    const requiredDeliveryFields = ["fullName", "phone", "addressLine1", "city", "state", "pincode"];
+    const hasAllDeliveryFields = requiredDeliveryFields.every(
+      (field) => normalizedDeliveryDetails[field] && normalizedDeliveryDetails[field].length > 0
+    );
+
+    if (!hasAllDeliveryFields) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide delivery details",
       });
     }
 
@@ -49,6 +76,7 @@ const createOrder = async (req, res) => {
     const order = await Order.create({
       customerName,
       customerEmail: customerEmail || "",
+      deliveryDetails: normalizedDeliveryDetails,
       userId: req.user?.id || "",
       items: normalizedItems,
       total: parsedTotal,
