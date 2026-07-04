@@ -322,12 +322,6 @@ function BuyPage() {
             </div>
           ) : null}
 
-          {errorMessage ? (
-            <div className="shop-error-banner" role="alert">
-              <strong>Checkout problem</strong>
-              <span>{errorMessage}</span>
-            </div>
-          ) : null}
         </section>
 
         <section className="buy-checkout-layout">
@@ -489,6 +483,13 @@ function BuyPage() {
                 Back to Menu
               </a>
             </div>
+
+            {errorMessage ? (
+              <div className="shop-error-banner buy-total-message" role="alert">
+                <strong>Checkout problem</strong>
+                <span>{errorMessage}</span>
+              </div>
+            ) : null}
 
             <p className="shop-panel-subtitle">
               {displayedOrder
