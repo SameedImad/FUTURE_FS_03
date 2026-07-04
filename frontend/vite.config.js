@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/auth': 'http://localhost:7000',
+      '/auth': 'https://royal-delight.onrender.com',
     },
   },
 })

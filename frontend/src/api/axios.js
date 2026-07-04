@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:7000",
+  baseURL: "https://royal-delight.onrender.com",
 });
 
 export default API;

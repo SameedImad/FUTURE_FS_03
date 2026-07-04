@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:7000";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://royal-delight.onrender.com";
 
 export async function apiRequest(path, options = {}) {
   const { headers: customHeaders, ...requestOptions } = options;
