@@ -8,6 +8,7 @@ import { auth, googleProvider } from "../../firebase";
 
 function Login() {
   const [errorMessage, setErrorMessage] = useState("");
+  const [googleErrorMessage, setGoogleErrorMessage] = useState("");
 
   useEffect(() => {
     if (!isLoggedIn() || typeof window === "undefined") return;
@@ -43,9 +44,10 @@ function Login() {
   if (isLoggedIn()) {
     return null;
   }
+
   const handleGoogleLogin = async () => {
     try {
-      setErrorMessage("");
+      setGoogleErrorMessage("");
       const result = await signInWithPopup(auth, googleProvider);
       const googleUser = result.user;
 
@@ -61,9 +63,11 @@ function Login() {
       setSession({ token: response.token, user: response.user });
       window.location.href = "/";
     } catch (error) {
-      console.log(error);
-      // Firebase may throw a popup-related error even when the login completes.
-      // Keep the UI quiet for Google auth so the successful sign-in can continue.
+      if (error?.code === "auth/popup-closed-by-user" || error?.code === "auth/cancelled-popup-request") {
+        return;
+      }
+
+      setGoogleErrorMessage(error?.message || "Google login failed");
     }
   };
   return (
@@ -86,12 +90,6 @@ function Login() {
 
         <div className="login-form-panel">
           <form className="login-form" onSubmit={handleLogin}>
-            {errorMessage ? (
-              <p className="login-form-message" role="alert" aria-live="polite">
-                {errorMessage}
-              </p>
-            ) : null}
-
             <label className="login-field-label" htmlFor="email">
               Email
             </label>
@@ -132,6 +130,12 @@ function Login() {
               </span>
               Continue with Google
             </button>
+
+            {(errorMessage || googleErrorMessage) ? (
+              <p className="login-google-message" role="alert" aria-live="polite">
+                {googleErrorMessage || errorMessage}
+              </p>
+            ) : null}
 
             <p className="login-signup-text">
               Don't have an account?
