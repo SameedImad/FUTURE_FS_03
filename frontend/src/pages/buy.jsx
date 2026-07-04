@@ -430,17 +430,6 @@ function BuyPage() {
                     placeholder="Postal code"
                   />
                 </label>
-                <label className="shop-field shop-field-wide">
-                  <span>Delivery instructions</span>
-                  <textarea
-                    rows="3"
-                    value={deliveryDetails.instructions}
-                    onChange={(event) =>
-                      setDeliveryDetails((current) => ({ ...current, instructions: event.target.value }))
-                    }
-                    placeholder="Any notes for the rider or admin"
-                  />
-                </label>
               </div>
             )}
           </div>
