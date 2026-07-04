@@ -42,7 +42,6 @@ function Signup() {
 
       clearCart();
       setSession({ token: response.token, user: response.user });
-      alert("Account created successfully");
       window.location.href = "/";
     } catch (err) {
       console.error('Signup error', err);
