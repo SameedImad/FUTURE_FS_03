@@ -95,7 +95,7 @@
   display: grid;
   gap: 22px;
   grid-template-columns: minmax(0, 1.5fr) minmax(280px, 360px);
-  align-items: start;
+  align-items: stretch;
   margin-top: 22px;
 }
 
@@ -209,6 +209,7 @@
   justify-content: flex-start;
   gap: 18px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 249, 249, 0.92) 100%);
+  height: 100%;
 }
 
 .shop-side-top {
@@ -269,26 +270,6 @@
 .shop-side-actions .shop-button,
 .shop-side-actions .shop-button-secondary {
   width: 100%;
-}
-
-.shop-side-note {
-  padding: 16px 16px 14px;
-  border-radius: 20px;
-  background: rgba(217, 41, 46, 0.05);
-  border: 1px solid rgba(217, 41, 46, 0.08);
-}
-
-.shop-side-note strong {
-  display: block;
-  color: #111111;
-  font-size: 0.92rem;
-}
-
-.shop-side-note p {
-  margin: 6px 0 0;
-  color: rgba(17, 17, 17, 0.68);
-  font-size: 0.92rem;
-  line-height: 1.55;
 }
 
 .shop-success-banner,
@@ -438,12 +419,6 @@
   color: #101010;
   font-size: 1.4rem;
   font-weight: 800;
-}
-
-.shop-panel-subtitle {
-  margin: 0;
-  color: rgba(17, 17, 17, 0.62);
-  font-size: 0.95rem;
 }
 
 .shop-payment-options {
@@ -621,17 +596,6 @@
 
 .shop-empty-inline {
   margin-top: 22px;
-}
-
-.shop-order-panel {
-  display: flex;
-  justify-content: center;
-  margin-top: 24px;
-}
-
-.shop-order-panel .shop-side-card {
-  width: 100%;
-  max-width: 520px;
 }
 
 .shop-cart-list {

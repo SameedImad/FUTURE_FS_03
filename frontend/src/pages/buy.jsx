@@ -512,23 +512,6 @@ function BuyPage() {
                     Back to Menu
                   </a>
                 </div>
-
-                <div className="shop-side-note">
-                  <strong>{paymentMethod === "online" ? "Secure test checkout" : "Pay when it arrives"}</strong>
-                  <p>
-                    {paymentMethod === "online"
-                      ? "Razorpay test mode is ready once you tap Place Order."
-                      : "COD confirms the order immediately and keeps it in admin review."}
-                  </p>
-                </div>
-
-                <p className="shop-panel-subtitle">
-                  {displayedOrder
-                    ? "Your order has been placed successfully."
-                    : paymentMethod === "online"
-                      ? "You will see Razorpay's secure test checkout after clicking Place Order."
-                      : "Cash on delivery confirms the order immediately and saves it for admin review."}
-                </p>
               </aside>
             </div>
 
