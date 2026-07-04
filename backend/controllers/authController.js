@@ -124,7 +124,7 @@ const loginUser = async (req, res) => {
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "User not found",
+        message: "User not found kindly sign up",
       });
     }
 
