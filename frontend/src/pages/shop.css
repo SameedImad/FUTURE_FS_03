@@ -91,6 +91,14 @@
   background: rgba(255, 255, 255, 0.72);
 }
 
+.shop-checkout-grid {
+  display: grid;
+  gap: 22px;
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 360px);
+  align-items: start;
+  margin-top: 22px;
+}
+
 .shop-delivery-header {
   display: flex;
   align-items: flex-start;
@@ -730,6 +738,10 @@
   .shop-cart-layout {
     grid-template-columns: 1fr;
   }
+
+  .shop-checkout-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 680px) {
@@ -780,11 +792,6 @@
     grid-template-columns: 1fr;
   }
 
-  .shop-side-card {
-    position: static;
-    max-width: none;
-  }
-
   .shop-side-meta {
     grid-template-columns: 1fr;
   }
@@ -794,7 +801,7 @@
     align-items: flex-start;
   }
 
-  .shop-order-panel {
-    justify-content: stretch;
+  .shop-checkout-grid {
+    gap: 18px;
   }
 }
