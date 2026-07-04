@@ -267,152 +267,185 @@ function BuyPage() {
   };
 
   return (
-    <div className="shop-page">
+    <div className="shop-page buy-page">
       <Navbar variant="customer" />
-      <main className="shop-main">
-        <section className="shop-hero">
-          <div className="shop-hero-card">
+      <main className="shop-main buy-main">
+        <section className="shop-hero-card buy-review-card">
+          <div className="buy-review-copy">
             <p className="shop-kicker">Buy page</p>
             <h1 className="shop-title">Review your order before placing it</h1>
             <p className="shop-copy">
               Hi {user?.name || "there"}, choose how you want to pay and place the order. Online checkout opens
               Razorpay test mode, while cash on delivery confirms the order immediately.
             </p>
-
-            <div className="shop-delivery-card">
-              <div className="shop-delivery-header">
-                <div>
-                  <p className="shop-delivery-kicker">Delivery details</p>
-                  <h2 className="shop-delivery-title">Where should we send your order?</h2>
-                </div>
-                {displayedOrder ? <span className="shop-delivery-badge">Saved for admin review</span> : null}
-              </div>
-
-              {displayedOrder ? (
-                <div className="shop-delivery-summary">
-                  <div>
-                    <strong>{displayedDeliveryDetails.fullName || "Recipient"}</strong>
-                    <span>{displayedDeliveryDetails.phone || "No phone number"}</span>
-                  </div>
-                  <p>
-                    {displayedDeliveryDetails.addressLine1}
-                    {displayedDeliveryDetails.addressLine2 ? `, ${displayedDeliveryDetails.addressLine2}` : ""}
-                  </p>
-                  <p>
-                    {displayedDeliveryDetails.city}, {displayedDeliveryDetails.state} - {displayedDeliveryDetails.pincode}
-                  </p>
-                  {displayedDeliveryDetails.instructions ? <p>{displayedDeliveryDetails.instructions}</p> : null}
-                </div>
-              ) : (
-                <div className="shop-delivery-form">
-                  <label className="shop-field">
-                    <span>Receiver name</span>
-                    <input
-                      type="text"
-                      value={deliveryDetails.fullName}
-                      onChange={(event) =>
-                        setDeliveryDetails((current) => ({ ...current, fullName: event.target.value }))
-                      }
-                      placeholder="Full name"
-                    />
-                  </label>
-                  <label className="shop-field">
-                    <span>Mobile number</span>
-                    <input
-                      type="tel"
-                      value={deliveryDetails.phone}
-                      onChange={(event) =>
-                        setDeliveryDetails((current) => ({ ...current, phone: event.target.value }))
-                      }
-                      placeholder="10-digit phone number"
-                    />
-                  </label>
-                  <label className="shop-field shop-field-wide">
-                    <span>Address line 1</span>
-                    <input
-                      type="text"
-                      value={deliveryDetails.addressLine1}
-                      onChange={(event) =>
-                        setDeliveryDetails((current) => ({ ...current, addressLine1: event.target.value }))
-                      }
-                      placeholder="Flat, house no., street"
-                    />
-                  </label>
-                  <label className="shop-field shop-field-wide">
-                    <span>Address line 2</span>
-                    <input
-                      type="text"
-                      value={deliveryDetails.addressLine2}
-                      onChange={(event) =>
-                        setDeliveryDetails((current) => ({ ...current, addressLine2: event.target.value }))
-                      }
-                      placeholder="Landmark, area, optional"
-                    />
-                  </label>
-                  <label className="shop-field">
-                    <span>City</span>
-                    <input
-                      type="text"
-                      value={deliveryDetails.city}
-                      onChange={(event) =>
-                        setDeliveryDetails((current) => ({ ...current, city: event.target.value }))
-                      }
-                      placeholder="City"
-                    />
-                  </label>
-                  <label className="shop-field">
-                    <span>State</span>
-                    <input
-                      type="text"
-                      value={deliveryDetails.state}
-                      onChange={(event) =>
-                        setDeliveryDetails((current) => ({ ...current, state: event.target.value }))
-                      }
-                      placeholder="State"
-                    />
-                  </label>
-                  <label className="shop-field">
-                    <span>Pincode</span>
-                    <input
-                      type="text"
-                      value={deliveryDetails.pincode}
-                      onChange={(event) =>
-                        setDeliveryDetails((current) => ({ ...current, pincode: event.target.value }))
-                      }
-                      placeholder="Postal code"
-                    />
-                  </label>
-                  <label className="shop-field shop-field-wide">
-                    <span>Delivery instructions</span>
-                    <textarea
-                      rows="3"
-                      value={deliveryDetails.instructions}
-                      onChange={(event) =>
-                        setDeliveryDetails((current) => ({ ...current, instructions: event.target.value }))
-                      }
-                      placeholder="Any notes for the rider or admin"
-                    />
-                  </label>
-                </div>
-              )}
-            </div>
-
-            {statusMessage ? (
-              <div className="shop-success-banner" role="status" aria-live="polite">
-                <strong>{orderSummaryTitle}</strong>
-                <span>{statusMessage}</span>
-              </div>
-            ) : null}
-
-            {errorMessage ? (
-              <div className="shop-error-banner" role="alert">
-                <strong>Checkout problem</strong>
-                <span>{errorMessage}</span>
-              </div>
-            ) : null}
           </div>
 
-          <aside className="shop-side-card">
+          {items.length === 0 ? (
+            <div className="shop-empty buy-empty-card">
+              <h2>No item selected yet</h2>
+              <p>Choose Buy on a card or go to your cart first.</p>
+              <div className="shop-action-row" style={{ justifyContent: "center", marginTop: "18px" }}>
+                <a className="shop-button" href="/menu">
+                  Go to Menu
+                </a>
+              </div>
+            </div>
+          ) : (
+            <section className="shop-buy-panel buy-cart-card">
+              <p className="shop-buy-badge">
+                {displayedOrder ? "Order confirmed" : isCartOrder ? "Cart checkout" : "Single item checkout"}
+              </p>
+
+              <div className="shop-cart-list">
+                {items.map((item) => (
+                  <article className="shop-cart-item" key={item.id}>
+                    <div className="shop-cart-item-row">
+                      <div>
+                        <h3 className="shop-cart-item-title">{item.name}</h3>
+                        <p className="shop-cart-item-meta">
+                          {item.quantity || 1} item{(item.quantity || 1) > 1 ? "s" : ""} ·{" "}
+                          {item.category.replace("-", " ")}
+                        </p>
+                      </div>
+                      <span className="shop-card-price">₹{item.price * (item.quantity || 1)}</span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {statusMessage ? (
+            <div className="shop-success-banner" role="status" aria-live="polite">
+              <strong>{orderSummaryTitle}</strong>
+              <span>{statusMessage}</span>
+            </div>
+          ) : null}
+
+          {errorMessage ? (
+            <div className="shop-error-banner" role="alert">
+              <strong>Checkout problem</strong>
+              <span>{errorMessage}</span>
+            </div>
+          ) : null}
+        </section>
+
+        <section className="buy-checkout-layout">
+          <div className="shop-delivery-card buy-delivery-card">
+            <div className="shop-delivery-header">
+              <div>
+                <p className="shop-delivery-kicker">Delivery details</p>
+                <h2 className="shop-delivery-title">Where should we send your order?</h2>
+              </div>
+              {displayedOrder ? <span className="shop-delivery-badge">Saved for admin review</span> : null}
+            </div>
+
+            {displayedOrder ? (
+              <div className="shop-delivery-summary">
+                <div>
+                  <strong>{displayedDeliveryDetails.fullName || "Recipient"}</strong>
+                  <span>{displayedDeliveryDetails.phone || "No phone number"}</span>
+                </div>
+                <p>
+                  {displayedDeliveryDetails.addressLine1}
+                  {displayedDeliveryDetails.addressLine2 ? `, ${displayedDeliveryDetails.addressLine2}` : ""}
+                </p>
+                <p>
+                  {displayedDeliveryDetails.city}, {displayedDeliveryDetails.state} - {displayedDeliveryDetails.pincode}
+                </p>
+                {displayedDeliveryDetails.instructions ? <p>{displayedDeliveryDetails.instructions}</p> : null}
+              </div>
+            ) : (
+              <div className="shop-delivery-form">
+                <label className="shop-field">
+                  <span>Receiver name</span>
+                  <input
+                    type="text"
+                    value={deliveryDetails.fullName}
+                    onChange={(event) =>
+                      setDeliveryDetails((current) => ({ ...current, fullName: event.target.value }))
+                    }
+                    placeholder="Full name"
+                  />
+                </label>
+                <label className="shop-field">
+                  <span>Mobile number</span>
+                  <input
+                    type="tel"
+                    value={deliveryDetails.phone}
+                    onChange={(event) =>
+                      setDeliveryDetails((current) => ({ ...current, phone: event.target.value }))
+                    }
+                    placeholder="10-digit phone number"
+                  />
+                </label>
+                <label className="shop-field shop-field-wide">
+                  <span>Address line 1</span>
+                  <input
+                    type="text"
+                    value={deliveryDetails.addressLine1}
+                    onChange={(event) =>
+                      setDeliveryDetails((current) => ({ ...current, addressLine1: event.target.value }))
+                    }
+                    placeholder="Flat, house no., street"
+                  />
+                </label>
+                <label className="shop-field shop-field-wide">
+                  <span>Address line 2</span>
+                  <input
+                    type="text"
+                    value={deliveryDetails.addressLine2}
+                    onChange={(event) =>
+                      setDeliveryDetails((current) => ({ ...current, addressLine2: event.target.value }))
+                    }
+                    placeholder="Landmark, area, optional"
+                  />
+                </label>
+                <label className="shop-field">
+                  <span>City</span>
+                  <input
+                    type="text"
+                    value={deliveryDetails.city}
+                    onChange={(event) => setDeliveryDetails((current) => ({ ...current, city: event.target.value }))}
+                    placeholder="City"
+                  />
+                </label>
+                <label className="shop-field">
+                  <span>State</span>
+                  <input
+                    type="text"
+                    value={deliveryDetails.state}
+                    onChange={(event) => setDeliveryDetails((current) => ({ ...current, state: event.target.value }))}
+                    placeholder="State"
+                  />
+                </label>
+                <label className="shop-field">
+                  <span>Pincode</span>
+                  <input
+                    type="text"
+                    value={deliveryDetails.pincode}
+                    onChange={(event) =>
+                      setDeliveryDetails((current) => ({ ...current, pincode: event.target.value }))
+                    }
+                    placeholder="Postal code"
+                  />
+                </label>
+                <label className="shop-field shop-field-wide">
+                  <span>Delivery instructions</span>
+                  <textarea
+                    rows="3"
+                    value={deliveryDetails.instructions}
+                    onChange={(event) =>
+                      setDeliveryDetails((current) => ({ ...current, instructions: event.target.value }))
+                    }
+                    placeholder="Any notes for the rider or admin"
+                  />
+                </label>
+              </div>
+            )}
+          </div>
+
+          <aside className="shop-side-card buy-total-card">
             <div className="shop-side-stat">
               <strong>₹{total}</strong>
               <span>Order total</span>
@@ -449,11 +482,11 @@ function BuyPage() {
             </div>
 
             <div className="shop-action-row">
-            {displayedOrder ? (
-              <a className="shop-button" href="/dashboard">
-                View Orders
-              </a>
-            ) : (
+              {displayedOrder ? (
+                <a className="shop-button" href="/dashboard">
+                  View Orders
+                </a>
+              ) : (
                 <button
                   className="shop-button"
                   type="button"
@@ -477,40 +510,6 @@ function BuyPage() {
             </p>
           </aside>
         </section>
-
-        {items.length === 0 ? (
-          <div className="shop-empty">
-            <h2>No item selected yet</h2>
-            <p>Choose Buy on a card or go to your cart first.</p>
-            <div className="shop-action-row" style={{ justifyContent: "center", marginTop: "18px" }}>
-              <a className="shop-button" href="/menu">
-                Go to Menu
-              </a>
-            </div>
-          </div>
-        ) : (
-          <section className="shop-buy-panel">
-            <p className="shop-buy-badge">
-              {displayedOrder ? "Order confirmed" : isCartOrder ? "Cart checkout" : "Single item checkout"}
-            </p>
-
-            <div className="shop-cart-list">
-              {items.map((item) => (
-                <article className="shop-cart-item" key={item.id}>
-                  <div className="shop-cart-item-row">
-                    <div>
-                      <h3 className="shop-cart-item-title">{item.name}</h3>
-                      <p className="shop-cart-item-meta">
-                        {item.quantity || 1} item{(item.quantity || 1) > 1 ? "s" : ""} · {item.category.replace("-", " ")}
-                      </p>
-                    </div>
-                    <span className="shop-card-price">₹{item.price * (item.quantity || 1)}</span>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-        )}
       </main>
     </div>
   );
